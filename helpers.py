@@ -18,21 +18,18 @@ def get_data():
 
 def get_mse_loss(y,y_pred):
     '''
-    -----------------------------------
-    Saves plots of epoch vs. loss on
-    the training and validation tests
-    respectively. 
-    -----------------------------------
+    -------------------------------------
+    Get the mean squared error loss given 
+    a set of labels and model predictions.
+    -------------------------------------
     Parameters
     ----------
-    output_path: Path where plots should be saved
-    train_loss: Array of training losses
-    test_loss: Array of testing losses
+    y: Data labels
+    y_pred: Model predictions
     
     Outputs: 
     -----------
-    Plot of training and testing loss by epoch 
-    saved at output_path
+    MSE value for given preds.
     -----------
     '''
     return np.sum((y-y_pred)**2/2)
@@ -41,21 +38,18 @@ def get_mse_loss(y,y_pred):
 
 def get_log_loss(y, y_pred):
     '''
-    -----------------------------------
-    Saves plots of epoch vs. loss on
-    the training and validation tests
-    respectively. 
-    -----------------------------------
+    -------------------------------------
+    Get log likelihood loss given a set
+    of labels and model predictions.
+    -------------------------------------
     Parameters
     ----------
-    output_path: Path where plots should be saved
-    train_loss: Array of training losses
-    test_loss: Array of testing losses
+    y: Data labels
+    y_pred: Model predictions
     
     Outputs: 
     -----------
-    Plot of training and testing loss by epoch 
-    saved at output_path
+    Log loss value for given preds.
     -----------
     '''
     return -1*sum(y*np.log(y_pred) +(1-y)*np.log(1-y_pred))
@@ -64,20 +58,16 @@ def get_log_loss(y, y_pred):
 def sigmoid(x):
     '''
     -----------------------------------
-    Saves plots of epoch vs. loss on
-    the training and validation tests
-    respectively. 
+    Calculates sigmoid activation value at x.
     -----------------------------------
     Parameters
     ----------
-    output_path: Path where plots should be saved
-    train_loss: Array of training losses
-    test_loss: Array of testing losses
+    x: Point at which to calculate sigmoid
+       value.
     
     Outputs: 
     -----------
-    Plot of training and testing loss by epoch 
-    saved at output_path
+    Sigmoid value at x
     -----------
     '''
     return 1/(1+np.exp(-x))
@@ -86,20 +76,17 @@ def sigmoid(x):
 def sigmoid_derivative(x):
     '''
     -----------------------------------
-    Saves plots of epoch vs. loss on
-    the training and validation tests
-    respectively. 
+    Calculates sigmoid derivative 
+    value at x.
     -----------------------------------
     Parameters
     ----------
-    output_path: Path where plots should be saved
-    train_loss: Array of training losses
-    test_loss: Array of testing losses
+    x: Point at which to calculate
+       derivative.
     
     Outputs: 
     -----------
-    Plot of training and testing loss by epoch 
-    saved at output_path
+    Sigmoid derivative at x
     -----------
     '''
     return sigmoid(x)*(1-sigmoid(x)) 
@@ -164,48 +151,50 @@ def get_loss_plot(output_path, train_loss, test_loss):
 
 
    
-def sgd_update (w, alpha, grad):
+def sgd_update(w, alpha, grad):
     '''
     -----------------------------------
-    Saves plots of epoch vs. loss on
-    the training and validation tests
-    respectively. 
+    Calculates updated value of weights
+    given current weightsm learning rate, 
+    gradient.
     -----------------------------------
     Parameters
     ----------
-    output_path: Path where plots should be saved
-    train_loss: Array of training losses
-    test_loss: Array of testing losses
+    w: current weights
+    alpha: learning rate
+    grad: gradient
     
     Outputs: 
     -----------
-    Plot of training and testing loss by epoch 
-    saved at output_path
+    New weights after applying update rule
     -----------
     '''
     return w - np.multiply(alpha,grad)
 
 
-def sgd_with_momentum_update(velocity,w,aplha,grad,momentum) :
+def sgd_with_momentum_update(w, alpha, grad, velocity, momentum) :
     '''
     -----------------------------------
-    Saves plots of epoch vs. loss on
-    the training and validation tests
-    respectively. 
+    Calculates updated value of weights using
+    momentum rule given current weights, 
+    learning rate, gradient, current 
+    velcotyi, momentum parameter.
     -----------------------------------
     Parameters
     ----------
-    output_path: Path where plots should be saved
-    train_loss: Array of training losses
-    test_loss: Array of testing losses
+    w: current weights
+    alpha: learning rate
+    grad: gradient
+    velocity: current velocity
+    momentum: momentum parameter
     
     Outputs: 
     -----------
-    Plot of training and testing loss by epoch 
-    saved at output_path
+    New weights after applying momentum update rule
+    New velocity to use at next update
     -----------
     '''
-    new_velocity = np.multiply(momentum,velocity) - np.multiply(alpha,grad)
+    new_velocity = np.multiply(momentum, velocity) - np.multiply(alpha, grad)
     w_new = w + new_velocity
     return w_new, new_velocity
 
@@ -213,31 +202,28 @@ def sgd_with_momentum_update(velocity,w,aplha,grad,momentum) :
 def get_minibatch(data, offset, batch_size):
     '''
     -----------------------------------
-    Saves plots of epoch vs. loss on
-    the training and validation tests
-    respectively. 
+    Divides given data into minibatches.
     -----------------------------------
     Parameters
     ----------
-    output_path: Path where plots should be saved
-    train_loss: Array of training losses
-    test_loss: Array of testing losses
+    data: Dataset to divide
+    offset: Point to start from
+    batch_size: Size of each minibatch
     
     Outputs: 
     -----------
-    Plot of training and testing loss by epoch 
-    saved at output_path
+    Batched dataset where each batch is of
+    size batch_size
     -----------
     '''
-    return data[offset:offset + batch_size]
+    return data[offset:offset+batch_size]
     
 
 def main():
     '''
     -----------------------------------
-    Saves plots of epoch vs. loss on
-    the training and validation tests
-    respectively. 
+    This function runs basic tests for
+    this script.
     -----------------------------------
     Parameters
     ----------
