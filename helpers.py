@@ -75,7 +75,30 @@ def get_loss_plot(output_path, train_loss, test_loss, ):
     # Save
     plt.savefig(output_path)
 
+def get_mse_loss(y,y_pred):
+    return np.sum((y-y_pred)**2/2)
 
+def get_log_loss(y,y_pred):
+    return -1*sum(y*np.log(y_pred) +(1-y)*np.log(1-y_pred))
+
+def sigmoid(x):
+    return 1/(1+np.exp(-x))
+
+def sigmoid_derivative(x):
+    return sigmoid(x)*(1-sigmoid(x))    
+
+
+def sgd_update (w,alpha,grad):
+    return w-np.multiply(alpha,grad)
+
+def sgd_with_momentum_update(velocity,w,aplha,grad,momentum) :
+    new_velocity = np.multiply(momentum,velocity) - np.multiply(alpha,grad)
+    w_new = w +new_velocity
+    return w_new , new_velocity
+
+def get_minibatch(data,offset,batch_size):
+    return data[offset:offset+batch_size]
+    
 def main():
     '''
     ----------------------
