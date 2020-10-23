@@ -35,7 +35,6 @@ def get_mse_loss(y,y_pred):
     return np.sum((y-y_pred)**2/2)
 
 
-
 def get_log_loss(y, y_pred):
     '''
     -------------------------------------
