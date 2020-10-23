@@ -39,7 +39,7 @@ def get_finite_differences(f, x, h):
     return(derivative)
 
 
-def get_loss_plot(train_loss, test_loss):
+def get_loss_plot(output_path, train_loss, test_loss, ):
     '''
     -----------------------------------
     Saves plots of epoch vs. loss on
@@ -48,12 +48,15 @@ def get_loss_plot(train_loss, test_loss):
     -----------------------------------
     Parameters
     ----------
+    output_path: Path where plots should be saved
     train_loss: Array of training losses
     test_loss: Array of testing losses
+
     
     Outputs: 
     -----------
-    Plot of training and testing loss by epoch
+    Plot of training and testing loss by epoch saved
+    at output_path
     -----------
     '''
     
@@ -88,4 +91,4 @@ def main():
 
 
 if __name__ = '__main__':
-    pass
+    main()
