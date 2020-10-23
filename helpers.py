@@ -123,9 +123,7 @@ def get_finite_differences(f, x, h):
     derivative: float or array of calculated derivatives
     -----------------------------------
     '''
-    derivative = (f(x + h)  - f(x))/h 
-
-    return(derivative)
+    return (f(x + h)  - f(x))/h 
 
 
 def get_loss_plot(output_path, train_loss, test_loss):
@@ -185,7 +183,7 @@ def sgd_update (w, alpha, grad):
     saved at output_path
     -----------
     '''
-    return w-np.multiply(alpha,grad)
+    return w - np.multiply(alpha,grad)
 
 
 def sgd_with_momentum_update(velocity,w,aplha,grad,momentum) :
@@ -208,8 +206,8 @@ def sgd_with_momentum_update(velocity,w,aplha,grad,momentum) :
     -----------
     '''
     new_velocity = np.multiply(momentum,velocity) - np.multiply(alpha,grad)
-    w_new = w +new_velocity
-    return w_new , new_velocity
+    w_new = w + new_velocity
+    return w_new, new_velocity
 
 
 def get_minibatch(data, offset, batch_size):
@@ -231,7 +229,7 @@ def get_minibatch(data, offset, batch_size):
     saved at output_path
     -----------
     '''
-    return data[offset:offset+batch_size]
+    return data[offset:offset + batch_size]
     
 
 def main():
