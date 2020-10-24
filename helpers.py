@@ -1,19 +1,56 @@
 # Import packages
 import matplotlib.pyplot as plt
-import numpy 
+import numpy as np
+import os
 
 
 
-def get_data(): 
+def get_data(input_folder, data_type): 
     '''
-    ----------------------
-    Input: 
-    Output: 
-
-    Description: 
-    -----------------------
+    -------------------------------------
+    Get the mean squared error loss given 
+    a set of labels and model predictions.
+    -------------------------------------
+    Parameters
+    ----------
+    input_folder: Path to input folder [rel. to current]
+    data_type: train, dev, or test set
+    
+    Outputs: 
+    -----------
+    Numpy array of images and labels respectively
+    -----------
     '''
-    pass
+    imgs_path = os.path.join(input_folder, 'fashion-{}-imgs.npz'.format(data_type))
+    labels_path = os.path.join(input_folder, 'fashion-{}-labels.npz'.format(data_type))
+
+    imgs = np.load(imgs_path)
+    labels = np.load(labels_path)
+    
+    return imgs, labels
+
+
+def flatten_imgs(imgs):
+    '''
+    -------------------------------------
+    Get the mean squared error loss given 
+    a set of labels and model predictions.
+    -------------------------------------
+    Parameters
+    ----------
+    input_folder: Path to input folder [rel. to current]
+    data_type: train, dev, or test set
+    
+    Outputs: 
+    -----------
+    Numpy array of images and labels respectively
+    -----------
+    '''
+    img_index = range(imgs.shape[-1])
+    img_dim = imgs.shape[0]*imgs.shape[1]
+    flat_imgs = np.array([imgs[:, :, img].reshape(img_dim, ) for img in img_index])
+
+    return flat_imgs
 
 
 def get_mse_loss(y,y_pred):
@@ -218,26 +255,6 @@ def get_minibatch(data, offset, batch_size):
     return data[offset:offset+batch_size]
     
 
-def main():
-    '''
-    -----------------------------------
-    This function runs basic tests for
-    this script.
-    -----------------------------------
-    Parameters
-    ----------
-    output_path: Path where plots should be saved
-    train_loss: Array of training losses
-    test_loss: Array of testing losses
-    
-    Outputs: 
-    -----------
-    Plot of training and testing loss by epoch 
-    saved at output_path
-    -----------
-    '''
-    pass
-
-
-if __name__ = '__main__':
-    main()
+if __name__ == '__main__':
+    imgs, labels = get_data(input_folder = 'data', data_type = 'train')
+    flat_imgs = flatten_imgs(imgs = imgs)
