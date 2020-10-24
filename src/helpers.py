@@ -1,4 +1,5 @@
 # Import packages
+import cv2
 import matplotlib.pyplot as plt
 import numpy as np
 import os
@@ -30,6 +31,28 @@ def get_data(input_folder, data_type):
     return imgs, labels
 
 
+def load_all_data(input_folder):
+    '''
+    -------------------------------------
+    Load all the train, dev and test arrays.
+    -------------------------------------
+    Parameters
+    ----------
+    input_folder
+
+    Outputs:
+    -----------
+    Images and labels for train, test, dev
+    -----------
+    '''
+
+    X_train, y_train = get_data(input_folder, "train")
+    X_dev, y_dev = get_data(input_folder, "dev")
+    X_test, y_test = get_data(input_folder, "test")
+
+    return X_train, y_train, X_dev, y_dev, X_test, y_test
+
+
 def flatten_imgs(imgs):
     '''
     -------------------------------------
@@ -51,6 +74,10 @@ def flatten_imgs(imgs):
     flat_imgs = np.array([imgs[:, :, img].reshape(img_dim, ) for img in img_index])
 
     return flat_imgs
+
+
+def vectorized_flatten(imgs):
+    return np.ravel(imgs).reshape((imgs.shape[0]*imgs.shape[1], imgs.shape[-1]))
 
 
 def get_mse_loss(y,y_pred):
@@ -88,7 +115,7 @@ def get_log_loss(y, y_pred):
     Log loss value for given preds.
     -----------
     '''
-    return -1*sum(y*np.log(y_pred) +(1-y)*np.log(1-y_pred))
+    return -1*np.sum(y*np.log(y_pred) +(1-y)*np.log(1-y_pred))
 
 
 def sigmoid(x):
@@ -125,7 +152,10 @@ def sigmoid_derivative(x):
     Sigmoid derivative at x
     -----------
     '''
-    return sigmoid(x)*(1-sigmoid(x)) 
+
+    s = sigmoid(x)
+
+    return s * (1-s)
 
 
 def get_finite_differences(f, x, h):
@@ -171,7 +201,7 @@ def get_loss_plot(output_path, train_loss, test_loss):
     
     # Calculate the no. of epochs training ran for
     # Assumes that 1 training_loss entry is 1 epoch
-    epoch = range(1, len(training_loss) + 1)
+    epoch = range(1, len(train_loss) + 1)
     
     # Add lines for each dataset
     plt.plot(epoch, train_loss, 'r--')
@@ -186,8 +216,26 @@ def get_loss_plot(output_path, train_loss, test_loss):
     plt.savefig(output_path)
 
 
-   
-def sgd_update(w, alpha, grad):
+def plot_loss(output_path, train_loss, label='Training Loss'):
+    epoch = range(1, len(train_loss) + 1)
+
+    # Add lines for each dataset
+    plt.plot(epoch, train_loss, 'r--')
+
+    # Add annotations
+    plt.legend([label])
+    plt.xlabel('Epoch')
+    plt.ylabel('Loss')
+
+    # Save
+    plt.savefig(output_path)
+
+
+def get_accuracy(target, pred):
+    return np.sum(target==pred)/max(target.shape)
+
+
+def gradient_update(w, alpha, grad):
     '''
     -----------------------------------
     Calculates updated value of weights
@@ -206,6 +254,12 @@ def sgd_update(w, alpha, grad):
     -----------
     '''
     return w - np.multiply(alpha,grad)
+
+
+def show_image(array):
+    cv2.imshow("image", array)
+    cv2.waitKey()
+    cv2.destroyAllWindows()
 
 
 def sgd_with_momentum_update(w, alpha, grad, velocity, momentum) :
