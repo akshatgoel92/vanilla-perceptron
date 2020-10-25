@@ -1,3 +1,5 @@
 .ipynb_checkpoints/
 data/
 .python-version
+data.tar.gz
+src/__pycache__/
