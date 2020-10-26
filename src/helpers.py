@@ -217,8 +217,29 @@ def get_loss_plot(output_path, train_loss, test_loss):
 
 
 def plot_loss(output_path, train_loss, label='Training Loss'):
+    '''
+    -----------------------------------
+    Saves plots of epoch vs. loss on
+    the training and validation tests
+    respectively. 
+    -----------------------------------
+    Parameters
+    ----------
+    output_path: Path where plots should be saved
+    train_loss: Array of training losses
+    test_loss: Array of testing losses
+    
+    Outputs: 
+    -----------
+    Plot of training and testing loss by epoch 
+    saved at output_path
+    -----------
+    '''
     epoch = range(1, len(train_loss) + 1)
-
+    
+    # Start a new figure
+    plt.clf()
+    
     # Add lines for each dataset
     plt.plot(epoch, train_loss, 'r--')
 
