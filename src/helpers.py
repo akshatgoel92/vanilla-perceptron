@@ -1,5 +1,5 @@
 # Import packages
-import cv2
+#import cv2
 import matplotlib.pyplot as plt
 import numpy as np
 import os
@@ -115,7 +115,8 @@ def get_log_loss(y, y_pred):
     Log loss value for given preds.
     -----------
     '''
-    return -1*np.sum(y*np.log(y_pred) +(1-y)*np.log(1-y_pred))
+    epsilon = 1e-7
+    return -1*np.sum(y*np.log(y_pred+epsilon) +(1-y)*np.log(1-y_pred+epsilon))
 
 
 def sigmoid(x):
