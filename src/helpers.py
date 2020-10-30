@@ -329,6 +329,63 @@ def get_minibatch(data, offset, batch_size):
     -----------
     '''
     return data[offset:offset+batch_size]
+
+
+def get_best_epoch(history):
+    '''
+    --------------------
+    Prepare data
+    --------------------
+    Parameters: 
+    weights: Current set of weights
+    biases: Current set of biases
+    gradients: Current set of gradients
+    learning_rate: parameter to guide SGD step size
+    --------------------
+    Output: 
+    Updated weights and biases
+    --------------------
+    '''
+    # Store results
+    best_epoch = np.array(history["losses"]).argmin()
+    best_accuracy = history['accuracies'][best_epoch]
+    best_loss = history['losses'][best_epoch]
+    
+    # Display results
+    print(f"best accuracy: {history['accuracies'][best_epoch]}")
+    print(f"best loss: {history['losses'][best_epoch]}")
+    print(f"best epoch: {best_epoch}")
+    
+    return(best_epoch, best_accuracy, best_loss)
+
+
+def get_results(X_dev, y_dev, history, best_epoch, label="dev"):
+    '''
+    --------------------
+    Prepare data
+    --------------------
+    Parameters: 
+    weights: Current set of weights
+    biases: Current set of biases
+    gradients: Current set of gradients
+    learning_rate: parameter to guide SGD step size
+    --------------------
+    Output: 
+    Updated weights and biases
+    --------------------
+    '''
+    w = history["weights"][best_epoch]
+    b = history["biases"][best_epoch]
+    activations = forward_pass(X_dev, w, b)
+
+    y_dev_prob = activations[-1]
+    y_dev_pred = np.where(y_dev_prob > 0.5, 1, 0)
+
+    loss = get_log_loss(y_dev, y_dev_prob)
+    accuracy = get_accuracy(y_dev, y_dev_pred)
+    print(f"{label} set accuracy: {accuracy}")
+    
+    return(accuracy)
     
 
 if __name__ == '__main__':
