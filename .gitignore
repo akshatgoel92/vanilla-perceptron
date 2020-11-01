@@ -3,3 +3,5 @@ data/
 .python-version
 data.tar.gz
 src/__pycache__/
+.DS_Store
+
