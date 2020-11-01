@@ -413,6 +413,30 @@ def get_results(X_dev, y_dev, history, best_epoch, label="dev"):
     return(accuracy)
 
 
+def shuffle_data(X, y):
+    '''
+    --------------------
+    Prepare data
+    --------------------
+    Parameters: 
+    weights: Current set of weights
+    biases: Current set of biases
+    gradients: Current set of gradients
+    learning_rate: parameter to guide SGD step size
+    --------------------
+    Output: 
+    Updated weights and biases
+    --------------------
+    '''
+    # Data is currently unshuffled; we should shuffle 
+    # each X[i] with its corresponding y[i]
+    perm = np.random.permutation(max(y.shape))
+    X = X[: , perm]
+    y = y[: , perm]
+
+    return(X, y)
+
+
 def get_best_results(history):
     '''
     --------------------
