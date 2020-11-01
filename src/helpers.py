@@ -356,6 +356,34 @@ def get_best_epoch(history):
     return(best_epoch, best_accuracy, best_loss)
 
 
+def get_best_dev_epoch(history):
+    '''
+    --------------------
+    Prepare data
+    --------------------
+    Parameters: 
+    weights: Current set of weights
+    biases: Current set of biases
+    gradients: Current set of gradients
+    learning_rate: parameter to guide SGD step size
+    --------------------
+    Output: 
+    Updated weights and biases
+    --------------------
+    '''
+    # Store results
+    best_epoch = np.array(history["dev_loss"]).argmin()
+    best_accuracy = history['dev_accuracies'][best_epoch]
+    best_loss = history['dev_loss'][best_epoch]
+    
+    # Display results
+    print(f"best accuracy: {history['accuracies'][best_epoch]}")
+    print(f"best loss: {history['losses'][best_epoch]}")
+    print(f"best epoch: {best_epoch}")
+    
+    return(best_epoch, best_accuracy, best_loss)
+
+
 def get_results(X_dev, y_dev, history, best_epoch, label="dev"):
     '''
     --------------------
