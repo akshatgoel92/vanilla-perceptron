@@ -377,9 +377,9 @@ def get_best_dev_epoch(history):
     best_loss = history['dev_loss'][best_epoch]
     
     # Display results
-    print(f"best accuracy: {history['accuracies'][best_epoch]}")
-    print(f"best loss: {history['losses'][best_epoch]}")
-    print(f"best epoch: {best_epoch}")
+    print(f"best dev accuracy: {history['accuracies'][best_epoch]}")
+    print(f"best dev loss: {history['losses'][best_epoch]}")
+    print(f"best dev epoch: {best_epoch}")
     
     return(best_epoch, best_accuracy, best_loss)
 
