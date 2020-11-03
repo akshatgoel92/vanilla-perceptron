@@ -244,7 +244,7 @@ def plot_loss(output_path, train_loss, label='Training Loss'):
     # Add annotations
     plt.legend([label])
     plt.xlabel('Epoch')
-    plt.ylabel([label])
+    plt.ylabel(label)
 
     # Save
     plt.savefig(output_path)
@@ -418,17 +418,17 @@ def shuffle_data(X, y):
     --------------------
     Prepare data
     --------------------
-    Parameters: 
+    Parameters:
     weights: Current set of weights
     biases: Current set of biases
     gradients: Current set of gradients
     learning_rate: parameter to guide SGD step size
     --------------------
-    Output: 
+    Output:
     Updated weights and biases
     --------------------
     '''
-    # Data is currently unshuffled; we should shuffle 
+    # Data is currently unshuffled; we should shuffle
     # each X[i] with its corresponding y[i]
     perm = np.random.permutation(max(y.shape))
     X = X[: , perm]
@@ -437,7 +437,7 @@ def shuffle_data(X, y):
     return(X, y)
 
 
-def get_best_results(history):
+def get_best_results(history, metric='losses'):
     '''
     --------------------
     Prepare data
@@ -453,13 +453,17 @@ def get_best_results(history):
     --------------------
     '''
     # Store results
-    best_epoch = np.array(history["losses"]).argmin()
+    if "loss" in metric:
+        best_epoch = np.array(history[metric]).argmin()
+    else:
+        best_epoch = np.array(history[metric]).argmax()
+
     best_accuracy = history['accuracies'][best_epoch]
     best_loss = history['losses'][best_epoch]
     
     # Display results
-    print(f"best accuracy: {history['accuracies'][best_epoch]}")
-    print(f"best loss: {history['losses'][best_epoch]}")
+    print(f"training accuracy at best epoch: {history['accuracies'][best_epoch]}")
+    print(f"training loss at best epoch: {history['losses'][best_epoch]}")
     print(f"best epoch: {best_epoch}")
     
     return(best_epoch, best_accuracy, best_loss)
