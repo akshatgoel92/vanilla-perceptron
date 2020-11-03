@@ -244,7 +244,7 @@ def plot_loss(output_path, train_loss, label='Training Loss'):
     # Add annotations
     plt.legend([label])
     plt.xlabel('Epoch')
-    plt.ylabel([label])
+    plt.ylabel(label)
 
     # Save
     plt.savefig(output_path)
