@@ -377,9 +377,9 @@ def get_best_dev_epoch(history):
     best_loss = history['dev_loss'][best_epoch]
     
     # Display results
-    print(f"best accuracy: {history['accuracies'][best_epoch]}")
-    print(f"best loss: {history['losses'][best_epoch]}")
-    print(f"best epoch: {best_epoch}")
+    print(f"best dev accuracy: {history['accuracies'][best_epoch]}")
+    print(f"best dev loss: {history['losses'][best_epoch]}")
+    print(f"best dev epoch: {best_epoch}")
     
     return(best_epoch, best_accuracy, best_loss)
 
@@ -411,6 +411,30 @@ def get_results(X_dev, y_dev, history, best_epoch, label="dev"):
     print(f"{label} set accuracy: {accuracy}")
     
     return(accuracy)
+
+
+def shuffle_data(X, y):
+    '''
+    --------------------
+    Prepare data
+    --------------------
+    Parameters:
+    weights: Current set of weights
+    biases: Current set of biases
+    gradients: Current set of gradients
+    learning_rate: parameter to guide SGD step size
+    --------------------
+    Output:
+    Updated weights and biases
+    --------------------
+    '''
+    # Data is currently unshuffled; we should shuffle
+    # each X[i] with its corresponding y[i]
+    perm = np.random.permutation(max(y.shape))
+    X = X[: , perm]
+    y = y[: , perm]
+
+    return(X, y)
 
 
 def get_best_results(history, metric='losses'):
