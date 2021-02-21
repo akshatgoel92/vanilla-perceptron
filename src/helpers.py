@@ -9,8 +9,8 @@ import os
 def get_data(input_folder, data_type): 
     '''
     -------------------------------------
-    Get the mean squared error loss given 
-    a set of labels and model predictions.
+    Get imgs and  label given input_folder
+    and data_type
     -------------------------------------
     Parameters
     ----------
@@ -45,7 +45,6 @@ def load_all_data(input_folder):
     Images and labels for train, test, dev
     -----------
     '''
-
     X_train, y_train = get_data(input_folder, "train")
     X_dev, y_dev = get_data(input_folder, "dev")
     X_test, y_test = get_data(input_folder, "test")
@@ -56,17 +55,19 @@ def load_all_data(input_folder):
 def prep_data(data_path):
     '''
     --------------------
-    Prepare data
-    Use vectorized flatten
+    Prepare data for 
+    training
     --------------------
     Parameters: 
-    weights: Current set of weights
-    biases: Current set of biases
-    gradients: Current set of gradients
-    learning_rate: parameter to guide SGD step size
+    data_path: Where the data is
     --------------------
     Output: 
-    Updated weights and biases
+    X_train_flattened: Flattened training features
+    X_dev_flattened: Flattened dev. features
+    X_test_flattened: Flattened test features
+    y_train: Flattened training labels
+    y_dev: Flattened training labels
+    y_test: Flattened training labels
     --------------------
     '''
     # Load
@@ -86,30 +87,21 @@ def prep_data(data_path):
     return(X_train_flattened, X_dev_flattened, X_test_flattened, y_train, y_dev, y_test)
 
 
-def flatten_imgs(imgs):
+def vectorized_flatten(imgs):
     '''
     -------------------------------------
-    Get the mean squared error loss given 
-    a set of labels and model predictions.
+    Given a list of imgs. each of n X n
+    return a list of imgs each of n**2 X 1
     -------------------------------------
     Parameters
     ----------
-    input_folder: Path to input folder [rel. to current]
-    data_type: train, dev, or test set
+    imgs: list of imgs
     
     Outputs: 
     -----------
-    Numpy array of images and labels respectively
+    MSE value for given preds.
     -----------
     '''
-    img_index = range(imgs.shape[-1])
-    img_dim = imgs.shape[0]*imgs.shape[1]
-    flat_imgs = np.array([imgs[:, :, img].reshape(img_dim, ) for img in img_index])
-
-    return flat_imgs
-
-
-def vectorized_flatten(imgs):
     return np.ravel(imgs).reshape((imgs.shape[0]*imgs.shape[1], imgs.shape[-1]))
 
 
@@ -192,34 +184,13 @@ def sigmoid_derivative(x):
     return s * (1-s)
 
 
-def get_finite_differences(f, x, h):
-    '''
-    -----------------------------------
-    Returns the gradient of function f
-    between point x and point x + h using
-    the finite differences method.
-    -----------------------------------
-    Parameters
-    ----------
-    f: Function to differentiate
-    x: Point at which to differentiate function
-    h: Size of interval over which to calculate gradient
-
-    Outputs: 
-    -----------
-    derivative: float or array of calculated derivatives
-    -----------------------------------
-    '''
-    return (f(x + h)  - f(x))/h 
-
-
 
 def plot_loss(output_path, train_loss, label='Training Loss'):
     '''
     -----------------------------------
     Saves plots of epoch vs. loss on
     the training and validation tests
-    respectively. 
+    respectively depending on the label.
     -----------------------------------
     Parameters
     ----------
@@ -251,6 +222,24 @@ def plot_loss(output_path, train_loss, label='Training Loss'):
 
 
 def get_accuracy(target, pred):
+        '''
+    -----------------------------------
+    Calculates correct classification rate
+    between target vector [labels] 
+    and predictions.
+    -----------------------------------
+    Parameters
+    ----------
+    target: vector of labels
+    pred: vector of predictions
+    These should be the same shape
+    
+    Outputs: 
+    -----------
+    Correct classification rate between 
+    target and pred
+    -----------
+    '''
     return np.sum(target==pred)/max(target.shape)
 
 
@@ -258,7 +247,7 @@ def gradient_update(w, alpha, grad):
     '''
     -----------------------------------
     Calculates updated value of weights
-    given current weightsm learning rate, 
+    given current weights, learning rate, 
     gradient.
     -----------------------------------
     Parameters
@@ -275,11 +264,6 @@ def gradient_update(w, alpha, grad):
     return w - np.multiply(alpha,grad)
 
 
-def show_image(array):
-    cv2.imshow("image", array)
-    cv2.waitKey()
-    cv2.destroyAllWindows()
-
 
 def sgd_with_momentum_update(w, alpha, grad, velocity, momentum) :
     '''
@@ -287,7 +271,7 @@ def sgd_with_momentum_update(w, alpha, grad, velocity, momentum) :
     Calculates updated value of weights using
     momentum rule given current weights, 
     learning rate, gradient, current 
-    velcotyi, momentum parameter.
+    velocity, momentum parameter.
     -----------------------------------
     Parameters
     ----------
@@ -308,39 +292,21 @@ def sgd_with_momentum_update(w, alpha, grad, velocity, momentum) :
     return w_new, new_velocity
 
 
-def get_minibatch(data, offset, batch_size):
-    '''
-    -----------------------------------
-    Divides given data into minibatches.
-    -----------------------------------
-    Parameters
-    ----------
-    data: Dataset to divide
-    offset: Point to start from
-    batch_size: Size of each minibatch
-    
-    Outputs: 
-    -----------
-    Batched dataset where each batch is of
-    size batch_size
-    -----------
-    '''
-    return data[offset:offset+batch_size]
-
-
 def get_best_epoch(history):
     '''
     --------------------
-    Prepare data
+    Get best training epoch
     --------------------
     Parameters: 
-    weights: Current set of weights
-    biases: Current set of biases
-    gradients: Current set of gradients
-    learning_rate: parameter to guide SGD step size
+    history: dictionary which
+    contains record of metrics
+    at every epoch of a training
+    run
     --------------------
     Output: 
-    Updated weights and biases
+    best_epoch: 
+    best_accuracy:
+    best_loss: 
     --------------------
     '''
     # Store results
@@ -359,16 +325,18 @@ def get_best_epoch(history):
 def get_best_dev_epoch(history):
     '''
     --------------------
-    Prepare data
+    Get best dev epoch
     --------------------
     Parameters: 
-    weights: Current set of weights
-    biases: Current set of biases
-    gradients: Current set of gradients
-    learning_rate: parameter to guide SGD step size
+    history: dictionary which
+    contains record of metrics
+    at every epoch of a training
+    run
     --------------------
     Output: 
-    Updated weights and biases
+    best_epoch: minimum dev. loss epoch
+    best_accuracy: accuracy on best_epoch
+    best_loss: loss on best_epoch
     --------------------
     '''
     # Store results
@@ -377,8 +345,8 @@ def get_best_dev_epoch(history):
     best_loss = history['dev_loss'][best_epoch]
     
     # Display results
-    print(f"best dev accuracy: {history['accuracies'][best_epoch]}")
-    print(f"best dev loss: {history['losses'][best_epoch]}")
+    print(f"best dev accuracy: {history['dev_accuracies'][best_epoch]}")
+    print(f"best dev loss: {history['dev_loss'][best_epoch]}")
     print(f"best dev epoch: {best_epoch}")
     
     return(best_epoch, best_accuracy, best_loss)
@@ -387,16 +355,16 @@ def get_best_dev_epoch(history):
 def get_results(X_dev, y_dev, history, best_epoch, label="dev"):
     '''
     --------------------
-    Prepare data
+    Get accuracy on dev set
     --------------------
     Parameters: 
-    weights: Current set of weights
-    biases: Current set of biases
-    gradients: Current set of gradients
-    learning_rate: parameter to guide SGD step size
+    X_dev: Dev. set features
+    y_dev: Dev. set labels
+    history: history object
+    best_epoch: epoch for which to get weights and biases
     --------------------
     Output: 
-    Updated weights and biases
+    accuracy: predicted accuracy on dev. set
     --------------------
     '''
     w = history["weights"][best_epoch]
@@ -416,8 +384,9 @@ def get_results(X_dev, y_dev, history, best_epoch, label="dev"):
 def shuffle_data(X, y):
     '''
     --------------------
-    Prepare data
+    Shuffle a dataset
     --------------------
+<<<<<<< HEAD
     Parameters:
     weights: Current set of weights
     biases: Current set of biases
@@ -426,6 +395,16 @@ def shuffle_data(X, y):
     --------------------
     Output:
     Updated weights and biases
+=======
+    Parameters: 
+    X: Vector of features
+    y: vector of labels
+    --------------------
+    Output: 
+    X, y permuted in such a
+    way as to maintain the correspondence
+    between features and labels
+>>>>>>> new-hyper-tuning
     --------------------
     '''
     # Data is currently unshuffled; we should shuffle
@@ -440,16 +419,22 @@ def shuffle_data(X, y):
 def get_best_results(history, metric='losses'):
     '''
     --------------------
-    Prepare data
+    Takes in a record of
+    training and returns
+    epoch on which min.
+    training loss
+    was reached, and the
+    training loss and 
+    accuracy at this epoch
     --------------------
     Parameters: 
-    weights: Current set of weights
-    biases: Current set of biases
-    gradients: Current set of gradients
-    learning_rate: parameter to guide SGD step size
+    history: record of metrics
+    from a training run
     --------------------
     Output: 
-    Updated weights and biases
+    best_epoch: epoch of min. training loss
+    best_accuracy: accuracy at best_epoch
+    best_loss: loss at best_epoch
     --------------------
     '''
     # Store results
@@ -467,8 +452,4 @@ def get_best_results(history, metric='losses'):
     print(f"best epoch: {best_epoch}")
     
     return(best_epoch, best_accuracy, best_loss)
-    
 
-if __name__ == '__main__':
-    imgs, labels = get_data(input_folder = 'data', data_type = 'train')
-    flat_imgs = flatten_imgs(imgs = imgs)
